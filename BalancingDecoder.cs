@@ -193,7 +193,7 @@ namespace ABEpicBalancingDataContainerDecoder
 					{
 						outputDecodedFile = Path.Combine(outputPathPrefix, outputDecodedFile);
 					}
-					File.WriteAllText(outputDecodedFile, JsonConvert.SerializeObject(ClassType.GetMethod(nameof(ProtoDeserialize)).MakeGenericMethod(TypeDef).Invoke(ClassType, new object[] { BalancingDataContainer[currClassName] })));
+					File.WriteAllText(outputDecodedFile, JsonConvert.SerializeObject(ClassType.GetMethod(nameof(ProtoDeserialize)).MakeGenericMethod(TypeDef).Invoke(ClassType, new object[] { BalancingDataContainer[currClassName] }), Formatting.Indented));
 					Console.WriteLine("Balancing data has been successfully decoded!");
 					return;
 				}
