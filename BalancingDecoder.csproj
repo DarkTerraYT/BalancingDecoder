@@ -9,7 +9,13 @@
 	
 	<ItemGroup>
 		<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
-		<PackageReference Include="protobuf-net" Version="3.2.30" />
+		<PackageReference Include="protobuf-net" Version="2.0.0.668" />
+	</ItemGroup>
+	
+	<ItemGroup>
+	  <Reference Include="ABH.Chimera.Library.Components">
+	    <HintPath>bin\Debug\net8.0-windows\ABH.Chimera.Library.Components.dll</HintPath>
+	  </Reference>
 	</ItemGroup>
 	
 </Project>

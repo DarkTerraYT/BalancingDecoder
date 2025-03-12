@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(DecoderForm));
             classes2 = new Button();
             events1 = new Button();
@@ -71,6 +72,13 @@
             button2 = new Button();
             import1 = new Button();
             import2 = new Button();
+            importCustomBalancing = new Button();
+            useCustomBalancing = new CheckBox();
+            toolTip = new ToolTip(components);
+            pickModule = new OpenFileDialog();
+            pickLibraryModule = new OpenFileDialog();
+            clearImportLog = new Button();
+            button3 = new Button();
             SuspendLayout();
             // 
             // classes2
@@ -119,7 +127,7 @@
             // 
             // customClass
             // 
-            customClass.Location = new Point(378, 274);
+            customClass.Location = new Point(375, 273);
             customClass.Name = "customClass";
             customClass.Size = new Size(36, 21);
             customClass.TabIndex = 7;
@@ -139,7 +147,7 @@
             // 
             // classInput
             // 
-            classInput.Location = new Point(228, 274);
+            classInput.Location = new Point(224, 274);
             classInput.Name = "classInput";
             classInput.Size = new Size(145, 21);
             classInput.TabIndex = 8;
@@ -177,7 +185,7 @@
             // selectBalancingData
             // 
             selectBalancingData.Font = new Font("Angry Birds Movie", 8.25F);
-            selectBalancingData.Location = new Point(127, 327);
+            selectBalancingData.Location = new Point(142, 327);
             selectBalancingData.Name = "selectBalancingData";
             selectBalancingData.Size = new Size(64, 21);
             selectBalancingData.TabIndex = 14;
@@ -227,7 +235,7 @@
             // textBox1
             // 
             textBox1.Font = new Font("Angry Birds Movie", 8.25F);
-            textBox1.Location = new Point(653, 274);
+            textBox1.Location = new Point(644, 274);
             textBox1.Name = "textBox1";
             textBox1.Size = new Size(145, 20);
             textBox1.TabIndex = 26;
@@ -235,7 +243,7 @@
             // addEncode
             // 
             addEncode.Font = new Font("Angry Birds Movie", 8.25F);
-            addEncode.Location = new Point(803, 274);
+            addEncode.Location = new Point(795, 274);
             addEncode.Name = "addEncode";
             addEncode.Size = new Size(36, 21);
             addEncode.TabIndex = 25;
@@ -348,7 +356,7 @@
             // selectOutput
             // 
             selectOutput.Font = new Font("Angry Birds Movie", 8.25F);
-            selectOutput.Location = new Point(127, 374);
+            selectOutput.Location = new Point(100, 376);
             selectOutput.Name = "selectOutput";
             selectOutput.Size = new Size(64, 21);
             selectOutput.TabIndex = 42;
@@ -375,7 +383,7 @@
             // selectInput
             // 
             selectInput.Font = new Font("Angry Birds Movie", 8.25F);
-            selectInput.Location = new Point(541, 374);
+            selectInput.Location = new Point(505, 376);
             selectInput.Name = "selectInput";
             selectInput.Size = new Size(64, 21);
             selectInput.TabIndex = 45;
@@ -409,7 +417,7 @@
             balancingNames.Font = new Font("Angry Birds Movie", 8.25F);
             balancingNames.Location = new Point(12, 434);
             balancingNames.Name = "balancingNames";
-            balancingNames.Size = new Size(213, 23);
+            balancingNames.Size = new Size(202, 23);
             balancingNames.TabIndex = 51;
             balancingNames.Text = "Get Class Names from Balancing";
             balancingNames.UseVisualStyleBackColor = true;
@@ -459,11 +467,71 @@
             import2.UseVisualStyleBackColor = true;
             import2.Click += import2_Click;
             // 
+            // importCustomBalancing
+            // 
+            importCustomBalancing.Font = new Font("Angry Birds Movie", 9F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            importCustomBalancing.Location = new Point(428, 429);
+            importCustomBalancing.Name = "importCustomBalancing";
+            importCustomBalancing.Size = new Size(202, 23);
+            importCustomBalancing.TabIndex = 56;
+            importCustomBalancing.Text = "Import Custom Balancing Data";
+            importCustomBalancing.UseVisualStyleBackColor = true;
+            importCustomBalancing.Click += importCustomBalancing_Click;
+            importCustomBalancing.MouseHover += importCustomBalancing_MouseHover;
+            // 
+            // useCustomBalancing
+            // 
+            useCustomBalancing.AutoSize = true;
+            useCustomBalancing.Font = new Font("Angry Birds Movie", 9F);
+            useCustomBalancing.Location = new Point(636, 415);
+            useCustomBalancing.Name = "useCustomBalancing";
+            useCustomBalancing.Size = new Size(197, 16);
+            useCustomBalancing.TabIndex = 57;
+            useCustomBalancing.Text = "Use Custom Balancing Classes";
+            useCustomBalancing.UseVisualStyleBackColor = true;
+            useCustomBalancing.MouseHover += useCustomBalancing_MouseHover;
+            // 
+            // pickModule
+            // 
+            pickModule.Filter = "Balancing Data Module|ABHSharedClient.dll";
+            pickModule.Title = "Pick Module";
+            // 
+            // pickLibraryModule
+            // 
+            pickLibraryModule.Filter = "Chimera Interface Module|ABH.Chimera.Library.Components.dll";
+            pickLibraryModule.Title = "Pick Module";
+            // 
+            // clearImportLog
+            // 
+            clearImportLog.Font = new Font("Angry Birds Movie", 9F);
+            clearImportLog.Location = new Point(636, 437);
+            clearImportLog.Name = "clearImportLog";
+            clearImportLog.Size = new Size(126, 23);
+            clearImportLog.TabIndex = 58;
+            clearImportLog.Text = "Clear Import Log";
+            clearImportLog.UseVisualStyleBackColor = true;
+            clearImportLog.Click += clearImportLog_Click;
+            // 
+            // button3
+            // 
+            button3.Font = new Font("Angry Birds Movie", 9F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            button3.Location = new Point(768, 437);
+            button3.Name = "button3";
+            button3.Size = new Size(65, 23);
+            button3.TabIndex = 59;
+            button3.Text = "Open Log";
+            button3.UseVisualStyleBackColor = true;
+            button3.Click += openLog_Click;
+            // 
             // DecoderForm
             // 
             AutoScaleDimensions = new SizeF(6F, 14F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(847, 469);
+            Controls.Add(button3);
+            Controls.Add(clearImportLog);
+            Controls.Add(useCustomBalancing);
+            Controls.Add(importCustomBalancing);
             Controls.Add(import2);
             Controls.Add(import1);
             Controls.Add(button2);
@@ -561,5 +629,12 @@
         private Button button2;
         private Button import1;
         private Button import2;
+        private Button importCustomBalancing;
+        private CheckBox useCustomBalancing;
+        private ToolTip toolTip;
+        private OpenFileDialog pickModule;
+        private OpenFileDialog pickLibraryModule;
+        private Button clearImportLog;
+        private Button button3;
     }
 }

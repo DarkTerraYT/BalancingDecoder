@@ -1,6 +1,9 @@
 ﻿using ABEpicBalancingDataContainerDecoder;
+using Chimera.Library.Components.Interfaces;
 using Newtonsoft.Json;
+using System.Diagnostics;
 using System.Numerics;
+using System.Reflection;
 
 namespace BalancingDecoderFrom
 {
@@ -37,7 +40,7 @@ namespace BalancingDecoderFrom
             }
         }
 
-        Rectangle GetScaledRect(Rectangle originalRect) 
+        Rectangle GetScaledRect(Rectangle originalRect)
         {
             Vector2 ratio = new((float)Width / FormOriginalSize.Width, (float)Height / FormOriginalSize.Height);
 
@@ -58,7 +61,7 @@ namespace BalancingDecoderFrom
 
         private void DecoderForm_Resize(object sender, EventArgs e)
         {
-            foreach ((var control, var rect) in ControlOriginalSizes) 
+            foreach ((var control, var rect) in ControlOriginalSizes)
             {
                 control.Bounds = GetScaledRect(rect);
                 control.Font = GetScaledFont(OriginalFonts[control]);
@@ -518,7 +521,7 @@ namespace BalancingDecoderFrom
 
         private void import1_Click(object sender, EventArgs e)
         {
-            var result = pickClassNames.ShowDialog();
+            var result = pickClassNames.ShowDialog(this);
 
             if (result == DialogResult.OK)
             {
@@ -541,7 +544,7 @@ namespace BalancingDecoderFrom
 
         private void import2_Click(object sender, EventArgs e)
         {
-            var result = pickClassNames.ShowDialog();
+            var result = pickClassNames.ShowDialog(this);
 
             if (result == DialogResult.OK)
             {
@@ -559,6 +562,95 @@ namespace BalancingDecoderFrom
                     encodeClassList.Items.AddRange(File.ReadAllLines(file));
                     SetAllItemsChecked(encodeClassList, true);
                 }
+            }
+        }
+
+        public bool UseBalancing()
+        {
+            return useCustomBalancing.Checked;
+        }
+
+        private void importCustomBalancing_MouseHover(object sender, EventArgs e)
+        {
+            toolTip.Show("Import a ABHSharedClient.dll to support custom balancing data.", this);
+        }
+
+        private void useCustomBalancing_MouseHover(object sender, EventArgs e)
+        {
+            toolTip.Show("Use the balancing data classes in the imported module?", this);
+        }
+
+        private void importCustomBalancing_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                var result = pickModule.ShowDialog(this);
+                if (result == DialogResult.OK)
+                {
+                    var balancingModule = Assembly.LoadFile(pickModule.FileName);
+                    result = pickLibraryModule.ShowDialog(this);
+                    if (result == DialogResult.OK)
+                    {
+                        var interfaceModule = Assembly.LoadFile(pickLibraryModule.FileName);
+                        List<Type> balancingData = [];
+                        string outputString = $"----{DateTime.Now.ToString()}----";
+                        foreach (var type in balancingModule.GetTypes())
+                        {
+                            if (type.GetInterfaces().Any(i => i.FullName == "Chimera.Library.Components.Interfaces.IBalancingData") && !type.IsInterface && !type.IsAbstract)
+                            {
+
+                                balancingData.Add(type);
+                                outputString += type.FullName + "\n";
+                            }
+                        }
+
+                        string path = Path.Combine(Directory.GetCurrentDirectory(), "importedClasses.txt");
+
+                        if (File.Exists(path))
+                        {
+                            outputString = File.ReadAllText(path) + outputString;
+                            File.Delete(path);
+                        }
+
+                        File.WriteAllText(path, outputString);
+
+                        BalancingDecoder.ImportedBalancingData = balancingData;
+
+                        MessageBox.Show("Successfully imported module! Imported type names saved in " + path + ".", "Decoder", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+                        return;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Failed to import module(s)!\n{ex.Message}", "Decoder", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void clearImportLog_Click(object sender, EventArgs e)
+        {
+
+            string path = Path.Combine(Directory.GetCurrentDirectory(), "importedClasses.txt");
+            if (File.Exists(path))
+            {
+                File.Delete(path);
+            }
+        }
+
+        private void openLog_Click(object sender, EventArgs e)
+        {
+            string path = Path.Combine(Directory.GetCurrentDirectory(), "importedClasses.txt");
+            if (File.Exists(path))
+            {
+                Process process = new();
+                process.StartInfo.FileName = path;
+                process.StartInfo.UseShellExecute = true;
+                process.Start();
+            }
+            else
+            {
+                MessageBox.Show("Log file doesn't exist.", "Decoder", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
         }
     }

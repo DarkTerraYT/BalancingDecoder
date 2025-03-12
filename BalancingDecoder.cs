@@ -12,6 +12,8 @@ namespace ABEpicBalancingDataContainerDecoder
 {
 	internal class BalancingDecoder
 	{
+		public static List<Type> ImportedBalancingData = null;
+
 		public static List<string> GetClassNames(string path)
 		{
             SerializedBalancingDataContainer tmp = ProtoDeserialize<SerializedBalancingDataContainer>(GetCompressionService().DecompressIfNecessary(File.ReadAllBytes(path)));
@@ -87,18 +89,35 @@ namespace ABEpicBalancingDataContainerDecoder
 				ReimportedBalancingDataContainer = tmp;
 				BalancingDataContainer = tmp.AllBalancingData;
 			assignClassType:
-				ClassType = typeof(BalancingDecoder);
-				CurrClassName = ClassType.FullName + "+" + className;
-				TypeDef = Type.GetType("System.Collections.Generic.List`1[" + CurrClassName + "]");
-				if (TypeDef == null)
+                ClassType = typeof(BalancingDecoder);
+                if (!Program.form.UseBalancing())
 				{
-					if (args.Length < 2)
+					CurrClassName = ClassType.FullName + "+" + className;
+                    TypeDef = Type.GetType("System.Collections.Generic.List`1[" + CurrClassName + "]");
+					if (TypeDef == null)
 					{
-						MessageBox.Show($"Class {className} doesnt exist!", "Decoder", MessageBoxButtons.OK, MessageBoxIcon.Error);
-						return;
+						if (args.Length < 2)
+						{
+							MessageBox.Show($"Class {className} doesnt exist!", "Decoder", MessageBoxButtons.OK, MessageBoxIcon.Error);
+							return;
+						}
 					}
+					skipToClassNameCheck = false;
 				}
-				skipToClassNameCheck = false;
+				else
+                {
+					CurrClassName = "ABH.Shared.BalancingData." + className;
+					TypeDef = ImportedBalancingData.Find(t => t.FullName ==  CurrClassName);
+                    if (TypeDef == null)
+                    {
+                        if (args.Length < 2)
+                        {
+                            MessageBox.Show($"Class {className} doesnt exist!", "Decoder", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            return;
+                        }
+                    }
+                    skipToClassNameCheck = false;
+                }
 			checkClassName:
 				for (int i = 0; i < BalancingDataContainer.Count; i++)
 				{
@@ -200,7 +219,7 @@ namespace ABEpicBalancingDataContainerDecoder
 			}
 			catch(Exception ex)
             {
-                MessageBox.Show($"{ex.Message}\n{ex.StackTrace}", "Decoder", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show($"Error occured while decoding class {args[1]} {ex}, {ex.Message}\n{ex.StackTrace}", "Decoder", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
             //Console.WriteLine(BalancingDataContainer.ElementAt(0).Key.Split(".").Last());
         }
